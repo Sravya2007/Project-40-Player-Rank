@@ -3,6 +3,7 @@ class Game {
 
   }
 
+  //gets the gameState
   getState(){
     var gameStateRef  = database.ref('gameState');
     gameStateRef.on("value",function(data){
@@ -11,12 +12,14 @@ class Game {
 
   }
 
+  //updates the gameState
   update(state){
     database.ref('/').update({
       gameState: state
     });
   }
 
+  //does not wait for the database to load the info and starts the game
   async start(){
     if(gameState === 0){
       player = new Player();
@@ -44,12 +47,12 @@ class Game {
     form.hide();
     
     Player.getPlayerInfo();
+
+    player.getCarsAtEnd();
     
     if(allPlayers !== undefined){
       background(rgb(198,135,103));
       image(track, 0,-displayHeight*4,displayWidth, displayHeight*5);
-      
-      //var display_position = 100;
       
       //index of the array
       var index = 0;
@@ -63,13 +66,12 @@ class Game {
         index = index + 1 ;
 
         //position the cars a little away from each other in x direction
-        x = x + 200;
+        x = x + 300;
+
         //use data form the database to display the cars in y direction
         y = displayHeight - allPlayers[plr].distance;
         cars[index-1].x = x;
         cars[index-1].y = y;
-       // console.log(index, player.index)
-
        
         if (index === player.index){
           stroke(10);
@@ -78,21 +80,25 @@ class Game {
           cars[index - 1].shapeColor = "red";
           camera.position.x = displayWidth/2;
           camera.position.y = cars[index-1].y;
+
+          if(player.distance > 5300){
+            gameState = 2;
+            player.rank += 1;
+            Player.updateCarsAtEnd(player.rank);
+            fill("blue");
+            textSize(20);
+            text("Name:" + player.name, cars[index-1].x, cars[index-1].y - 150);
+            text("Rank:" + player.rank, cars[index-1].x, cars[index-1].y - 100);
+          }
         }
        
-        //textSize(15);
-        //text(allPlayers[plr].name + ": " + allPlayers[plr].distance, 120,display_position)
       }
 
     }
 
     if(keyIsDown(UP_ARROW) && player.index !== null){
-      player.distance +=10
+      player.distance += 20
       player.update();
-    }
-
-    if(player.distance > 3860){
-      gameState = 2;
     }
    
     drawSprites();
@@ -100,5 +106,7 @@ class Game {
 
   end(){
     console.log("Game Ended");
+    //console.log(player.rank);
+    //console.log(player.name);
   }
 }
