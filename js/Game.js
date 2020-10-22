@@ -87,8 +87,8 @@ class Game {
             Player.updateCarsAtEnd(player.rank);
             fill("blue");
             textSize(20);
-            text("Name:" + player.name, cars[index-1].x, cars[index-1].y - 150);
-            text("Rank:" + player.rank, cars[index-1].x, cars[index-1].y - 100);
+            text("Name:" + " " + player.name, cars[index-1].x, cars[index-1].y - 150);
+            text("Rank:" + " " + player.rank, cars[index-1].x, cars[index-1].y - 100);
           }
         }
        
